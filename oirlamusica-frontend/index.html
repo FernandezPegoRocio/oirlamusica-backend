@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oir La Música - Calendario de Eventos Musicales</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/calendar.css">
+    <link rel="stylesheet" href="styles/modal.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <h1>🎵 Oir La Música</h1>
+                <p class="tagline">Tu calendario musical en Mar del Plata</p>
+            </div>
+            <nav class="nav">
+                <ul>
+                    <li><a href="#calendar" class="nav-link active">Calendario</a></li>
+                    <li><a href="#artists" class="nav-link">Artistas</a></li>
+                    <li><a href="#upcoming" class="nav-link">Próximos</a></li>
+                </ul>
+                <div class="auth-buttons">
+                    <button id="loginBtn" class="btn btn-outline">Ingresar</button>
+                    <button id="registerBtn" class="btn btn-primary">Registrarse</button>
+                </div>
+                <div class="user-menu" style="display: none;">
+                    <span class="user-name"></span>
+                    <button id="dashboardBtn" class="btn btn-outline">Panel</button>
+                    <button id="logoutBtn" class="btn btn-outline">Salir</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Calendar Section -->
+        <section id="calendar" class="section active">
+            <div class="container">
+                <div class="calendar-header">
+                    <button id="prevMonth" class="btn-nav">←</button>
+                    <h2 id="currentMonth">Noviembre 2024</h2>
+                    <button id="nextMonth" class="btn-nav">→</button>
+                </div>
+                <div class="calendar-grid" id="calendarGrid">
+                    <!-- Calendar will be generated here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Artists Section -->
+        <section id="artists" class="section">
+            <div class="container">
+                <h2>Artistas</h2>
+                <div class="artists-grid" id="artistsGrid">
+                    <!-- Artists will be loaded here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Upcoming Events Section -->
+        <section id="upcoming" class="section">
+            <div class="container">
+                <h2>Próximos Eventos</h2>
+                <div class="events-list" id="eventsList">
+                    <!-- Events will be loaded here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Section (Hidden by default) -->
+        <section id="dashboard" class="section" style="display: none;">
+            <div class="container">
+                <h2>Panel de Control</h2>
+                
+                <!-- Artist Dashboard -->
+                <div id="artistDashboard" class="dashboard-content">
+                    <div class="tabs">
+                        <button class="tab-btn active" data-tab="profile">Mi Perfil</button>
+                        <button class="tab-btn" data-tab="events">Mis Eventos</button>
+                        <button class="tab-btn" data-tab="new-event">Nuevo Evento</button>
+                    </div>
+                    
+                    <div class="tab-content active" id="profile-tab">
+                        <form id="profileForm" class="form">
+                            <h3>Información del Artista</h3>
+                            <div class="form-group">
+                                <label>Nombre Artístico</label>
+                                <input type="text" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Foto (URL de Google Drive)</label>
+                                <input type="url" name="photo_url" placeholder="https://drive.google.com/...">
+                            </div>
+                            <div class="form-group">
+                                <label>Teléfono</label>
+                                <input type="tel" name="phone">
+                            </div>
+                            <div class="form-group">
+                                <label>Sitio Web</label>
+                                <input type="url" name="website">
+                            </div>
+                            <h4>Plataformas de Streaming</h4>
+                            <div class="form-group">
+                                <label>Spotify</label>
+                                <input type="url" name="spotify">
+                            </div>
+                            <div class="form-group">
+                                <label>Apple Music</label>
+                                <input type="url" name="apple_music">
+                            </div>
+                            <div class="form-group">
+                                <label>YouTube</label>
+                                <input type="url" name="youtube_channel">
+                            </div>
+                            <div class="form-group">
+                                <label>Instagram</label>
+                                <input type="text" name="instagram" placeholder="@usuario">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Guardar Perfil</button>
+                        </form>
+                    </div>
+                    
+                    <div class="tab-content" id="events-tab">
+                        <h3>Mis Eventos</h3>
+                        <div id="myEventsList" class="events-manager">
+                            <!-- Artist's events will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="new-event-tab">
+                        <form id="eventForm" class="form">
+                            <h3>Crear Nuevo Evento</h3>
+                            <div class="form-group">
+                                <label>Título del Evento</label>
+                                <input type="text" name="title" required>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Fecha</label>
+                                    <input type="date" name="date" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Hora</label>
+                                    <input type="time" name="time" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Lugar</label>
+                                <input type="text" name="venue" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Tipo de Entrada</label>
+                                <select name="entry_type" required>
+                                    <option value="">Seleccionar...</option>
+                                    <option value="gratuito">Gratuito</option>
+                                    <option value="gorra">A la gorra</option>
+                                    <option value="beneficio">A beneficio</option>
+                                    <option value="arancelado">Arancelado</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Precio (si aplica)</label>
+                                <input type="number" name="price" min="0" step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label>Link de Venta de Entradas</label>
+                                <input type="url" name="ticket_url">
+                            </div>
+                            <div class="form-group">
+                                <label>Flyer (URL de Google Drive)</label>
+                                <input type="url" name="flyer_url">
+                            </div>
+                            <div class="form-group">
+                                <label>Descripción</label>
+                                <textarea name="description" rows="4"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Crear Evento</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Admin Dashboard -->
+                <div id="adminDashboard" class="dashboard-content" style="display: none;">
+                    <div class="tabs">
+                        <button class="tab-btn active" data-tab="admin-artists">Gestionar Artistas</button>
+                        <button class="tab-btn" data-tab="admin-events">Gestionar Eventos</button>
+                        <button class="tab-btn" data-tab="admin-audit">Auditoría</button>
+                    </div>
+                    
+                    <div class="tab-content active" id="admin-artists-tab">
+                        <h3>Gestión de Artistas</h3>
+                        <div id="adminArtistsList" class="admin-list">
+                            <!-- Artists list for admin -->
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="admin-events-tab">
+                        <h3>Gestión de Eventos</h3>
+                        <div id="adminEventsList" class="admin-list">
+                            <!-- Events list for admin -->
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="admin-audit-tab">
+                        <h3>Registro de Auditoría</h3>
+                        <div id="auditLog" class="audit-log">
+                            <!-- Audit log -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Event Modal -->
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modalBody">
+                <!-- Event details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content modal-small">
+            <span class="close">&times;</span>
+            <h2>Iniciar Sesión</h2>
+            <form id="loginForm" class="form">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content modal-small">
+            <span class="close">&times;</span>
+            <h2>Registrarse como Artista</h2>
+            <form id="registerForm" class="form">
+                <div class="form-group">
+                    <label>Nombre Artístico</label>
+                    <input type="text" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" name="password" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label>Teléfono (opcional)</label>
+                    <input type="tel" name="phone">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Registrarse</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/calendar.js"></script>
+    <script src="js/events.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
